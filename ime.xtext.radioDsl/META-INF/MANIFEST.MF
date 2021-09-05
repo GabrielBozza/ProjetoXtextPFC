@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: ime.xtext.radioDsl
+Bundle-ManifestVersion: 2
+Bundle-Name: ime.xtext.radioDsl
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: ime.xtext.radioDsl; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: FormacaoRegrasRadioPFC,
+ org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ org.eclipse.xtext.util,
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: ime.xtext.radioDsl.services,
+ ime.xtext.radioDsl.parser.antlr,
+ ime.xtext.radioDsl.scoping,
+ ime.xtext.radioDsl.serializer,
+ ime.xtext.radioDsl.validation,
+ ime.xtext.radioDsl.formatting2,
+ ime.xtext.radioDsl.generator,
+ ime.xtext.radioDsl,
+ ime.xtext.radioDsl.parser.antlr.internal
+Import-Package: org.apache.log4j
