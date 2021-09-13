@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="ASCII"?>
+<action:RuleSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:action="http://action/1.0">
+  <rule name="Rule_ST1" priority="1">
+    <leftside xsi:type="action:CompoundExp">
+      <expression xsi:type="action:SimpleExp">
+        <operator xsi:type="action:Comparator" Operation="equal"/>
+        <operand xsi:type="action:BoolAttributes"/>
+        <operand xsi:type="action:Bool" value="true"/>
+      </expression>
+      <expression xsi:type="action:CompoundExp" PrecedingLogicOp="and">
+        <expression xsi:type="action:SimpleExp">
+          <operator xsi:type="action:Comparator" Operation="greater_equal"/>
+          <operand xsi:type="action:NumAttributes"/>
+          <operand xsi:type="action:Num" value="0.5"/>
+        </expression>
+        <expression xsi:type="action:SimpleExp" PrecedingLogicOp="and">
+          <operator xsi:type="action:Comparator" Operation="equal"/>
+          <operand xsi:type="action:NumAttributes" numAttr="CarrierFreq"/>
+          <operand xsi:type="action:Num" value="50.0"/>
+        </expression>
+        <expression xsi:type="action:SimpleExp" PrecedingLogicOp="and">
+          <operator xsi:type="action:Comparator" Operation="equal"/>
+          <operand xsi:type="action:StringAttributes"/>
+          <operand xsi:type="action:Strings" value="Cmt"/>
+        </expression>
+      </expression>
+    </leftside>
+    <rightside xsi:type="action:ActionRadio"/>
+  </rule>
+  <rule name="Rule_ST2" priority="2">
+    <leftside xsi:type="action:CompoundExp">
+      <expression xsi:type="action:SimpleExp">
+        <operator xsi:type="action:Comparator" Operation="equal"/>
+        <operand xsi:type="action:BoolAttributes" boolAttr="SNRValues_DESC"/>
+        <operand xsi:type="action:Bool" value="true"/>
+      </expression>
+      <expression xsi:type="action:CompoundExp" PrecedingLogicOp="and">
+        <expression xsi:type="action:SimpleExp">
+          <operator xsi:type="action:Comparator" Operation="less"/>
+          <operand xsi:type="action:NumAttributes"/>
+          <operand xsi:type="action:Num" value="0.5"/>
+        </expression>
+        <expression xsi:type="action:SimpleExp" PrecedingLogicOp="and">
+          <operator xsi:type="action:Comparator" Operation="equal"/>
+          <operand xsi:type="action:NumAttributes" numAttr="CarrierFreq"/>
+          <operand xsi:type="action:Num" value="100.0"/>
+        </expression>
+        <expression xsi:type="action:SimpleExp" PrecedingLogicOp="and">
+          <operator xsi:type="action:Comparator" Operation="equal"/>
+          <operand xsi:type="action:StringAttributes"/>
+          <operand xsi:type="action:Strings" value="Soldier"/>
+        </expression>
+      </expression>
+    </leftside>
+    <rightside xsi:type="action:ActionRadio" newState="NORMAL_MODE"/>
+  </rule>
+  <rule name="Rule_ST3" priority="3">
+    <leftside xsi:type="action:CompoundExp">
+      <expression xsi:type="action:SimpleExp">
+        <operator xsi:type="action:Comparator" Operation="equal"/>
+        <operand xsi:type="action:BoolAttributes"/>
+        <operand xsi:type="action:Bool" value="true"/>
+      </expression>
+      <expression xsi:type="action:CompoundExp" PrecedingLogicOp="and">
+        <expression xsi:type="action:SimpleExp">
+          <operator xsi:type="action:Comparator" Operation="less"/>
+          <operand xsi:type="action:NumAttributes"/>
+          <operand xsi:type="action:Num" value="0.5"/>
+        </expression>
+        <expression xsi:type="action:SimpleExp" PrecedingLogicOp="and">
+          <operator xsi:type="action:Comparator" Operation="equal"/>
+          <operand xsi:type="action:NumAttributes" numAttr="CarrierFreq"/>
+          <operand xsi:type="action:Num" value="100.0"/>
+        </expression>
+        <expression xsi:type="action:SimpleExp" PrecedingLogicOp="and">
+          <operator xsi:type="action:Comparator" Operation="equal"/>
+          <operand xsi:type="action:StringAttributes"/>
+          <operand xsi:type="action:Strings" value="Cmt"/>
+        </expression>
+      </expression>
+    </leftside>
+    <rightside xsi:type="action:ActionRadio" newState="FULLDUPLEX_MODE"/>
+  </rule>
+  <rule name="Rule_ST4" priority="4">
+    <leftside xsi:type="action:CompoundExp">
+      <expression xsi:type="action:SimpleExp">
+        <operator xsi:type="action:Comparator" Operation="equal"/>
+        <operand xsi:type="action:BoolAttributes" boolAttr="SNRValues_DESC"/>
+        <operand xsi:type="action:Bool" value="true"/>
+      </expression>
+      <expression xsi:type="action:CompoundExp" PrecedingLogicOp="and">
+        <expression xsi:type="action:SimpleExp">
+          <operator xsi:type="action:Comparator" Operation="greater_equal"/>
+          <operand xsi:type="action:NumAttributes"/>
+          <operand xsi:type="action:Num" value="0.5"/>
+        </expression>
+        <expression xsi:type="action:SimpleExp" PrecedingLogicOp="and">
+          <operator xsi:type="action:Comparator" Operation="equal"/>
+          <operand xsi:type="action:NumAttributes" numAttr="CarrierFreq"/>
+          <operand xsi:type="action:Num" value="50.0"/>
+        </expression>
+        <expression xsi:type="action:SimpleExp" PrecedingLogicOp="and">
+          <operator xsi:type="action:Comparator" Operation="equal"/>
+          <operand xsi:type="action:StringAttributes"/>
+          <operand xsi:type="action:Strings" value="Soldier"/>
+        </expression>
+      </expression>
+    </leftside>
+    <rightside xsi:type="action:ActionRadio" newState="NORMAL_MODE"/>
+  </rule>
+  <rule name="Rule_ST5" priority="5">
+    <leftside xsi:type="action:SimpleExp">
+      <operator xsi:type="action:Comparator" Operation="equal"/>
+      <operand xsi:type="action:BoolAttributes"/>
+      <operand xsi:type="action:Bool" value="true"/>
+    </leftside>
+    <rightside xsi:type="action:ActionRadio" newState="ALERT_MODE"/>
+  </rule>
+  <rule name="Rule_ST6" priority="6">
+    <leftside xsi:type="action:SimpleExp">
+      <operator xsi:type="action:Comparator" Operation="equal"/>
+      <operand xsi:type="action:BoolAttributes" boolAttr="SNRValues_DESC"/>
+      <operand xsi:type="action:Bool" value="true"/>
+    </leftside>
+    <rightside xsi:type="action:ActionRadio" newState="ALERT_MODE"/>
+  </rule>
+  <rule name="Rule_ST7" priority="7">
+    <leftside xsi:type="action:CompoundExp">
+      <expression xsi:type="action:SimpleExp">
+        <operator xsi:type="action:Comparator" Operation="equal"/>
+        <operand xsi:type="action:BoolAttributes"/>
+        <operand xsi:type="action:Bool"/>
+      </expression>
+      <expression xsi:type="action:SimpleExp" PrecedingLogicOp="and">
+        <operator xsi:type="action:Comparator" Operation="equal"/>
+        <operand xsi:type="action:BoolAttributes" boolAttr="SNRValues_DESC"/>
+        <operand xsi:type="action:Bool"/>
+      </expression>
+    </leftside>
+    <rightside xsi:type="action:ActionRadio" newState="MAINTAIN_CURRENT_MODE"/>
+  </rule>
+  <rule name="Rule_ST8" priority="8">
+    <leftside xsi:type="action:CompoundExp">
+      <expression xsi:type="action:SimpleExp">
+        <operator xsi:type="action:Logic"/>
+        <operand xsi:type="action:BoolAttributes"/>
+      </expression>
+      <expression xsi:type="action:SimpleExp" PrecedingLogicOp="and">
+        <operator xsi:type="action:Comparator" Operation="equal"/>
+        <operand xsi:type="action:StringAttributes"/>
+        <operand xsi:type="action:Strings" value="Cmt"/>
+      </expression>
+      <expression xsi:type="action:CompoundExp" PrecedingLogicOp="and">
+        <expression xsi:type="action:SimpleExp">
+          <operator xsi:type="action:Logic" Operation="not"/>
+          <operand xsi:type="action:BoolAttributes" boolAttr="SNRValues_DESC"/>
+        </expression>
+        <expression xsi:type="action:CompoundExp" PrecedingLogicOp="and">
+          <expression xsi:type="action:SimpleExp">
+            <operator xsi:type="action:Comparator" Operation="equal"/>
+            <operand xsi:type="action:BoolAttributes" boolAttr="SNRValues_DESC"/>
+            <operand xsi:type="action:Bool" value="true"/>
+          </expression>
+          <expression xsi:type="action:SimpleExp" PrecedingLogicOp="or">
+            <operator xsi:type="action:Comparator" Operation="not_equal"/>
+            <operand xsi:type="action:StringAttributes"/>
+            <operand xsi:type="action:Strings" value="Error"/>
+          </expression>
+        </expression>
+      </expression>
+    </leftside>
+    <rightside xsi:type="action:ActionRadio" newState="MAINTAIN_CURRENT_MODE"/>
+  </rule>
+</action:RuleSet>

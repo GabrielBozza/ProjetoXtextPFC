@@ -1,0 +1,38 @@
+RuleSet{
+	Rule 'Rule_ST1' {
+		priority = 1
+		rule = _[ _(SNRValues_ASC=true) and [_(SecurityLevel>=0.5)and(CarrierFrequency=50.0)and(OperationalRole="Cmt")]] 
+		--> SILENT_MODE
+	},
+	Rule 'Rule_ST2' {
+		priority = 2
+		rule = _[ _(SNRValues_DESC=true) and [_(SecurityLevel<0.5)and(CarrierFrequency=100.0)and(OperationalRole="Soldier")]]
+		--> NORMAL_MODE
+	},
+	Rule 'Rule_ST3' {
+		priority = 3
+		rule = _[ _(SNRValues_ASC=true) and [_(SecurityLevel<0.5)and(CarrierFrequency=100.0)and(OperationalRole="Cmt")]]
+		--> FULLDUPLEX_MODE
+	},
+	Rule 'Rule_ST4' {
+		priority = 4
+		rule = _[ _(SNRValues_DESC=true) and [_(SecurityLevel>=0.5)and(CarrierFrequency=50.0)and(OperationalRole="Soldier")]]
+		--> NORMAL_MODE
+	},
+	Rule 'Rule_ST5' {
+		priority = 5
+		rule = _(SNRValues_ASC=true) --> ALERT_MODE
+	},
+	Rule 'Rule_ST6' {
+		priority = 6
+		rule = _(SNRValues_DESC=true) --> ALERT_MODE
+	},
+	Rule 'Rule_ST7' {
+		priority = 7
+		rule = _[ _(SNRValues_ASC=false)and(SNRValues_DESC=false)] --> MAINTAIN_CURRENT_MODE 
+	},
+		Rule 'Rule_ST8' {
+		priority = 8
+		rule = _[ _(_ SNRValues_ASC)and(OperationalRole="Cmt")and[_(not SNRValues_DESC)and[_(SNRValues_DESC=true)or(OperationalRole!="Error")]]] --> MAINTAIN_CURRENT_MODE 
+	}
+}

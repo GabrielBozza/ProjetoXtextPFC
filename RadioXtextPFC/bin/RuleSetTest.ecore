@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action:RuleSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:action="http://action/1.0">
+  <rule name="Rule_ST1" priority="-10">
+    <leftside xsi:type="action:CompoundExp">
+      <expression xsi:type="action:SimpleExp">
+        <operator xsi:type="action:Comparator" Operation="equal"/>
+        <operand xsi:type="action:BoolAttributes"/>
+        <operand xsi:type="action:Bool"/>
+      </expression>
+      <expression xsi:type="action:SimpleExp">
+        <operator xsi:type="action:Comparator" Operation="equal"/>
+        <operand xsi:type="action:BoolAttributes" boolAttr="SNRValues_DESC"/>
+        <operand xsi:type="action:Bool"/>
+      </expression>
+    </leftside>
+    <rightside xsi:type="action:ActionRadio" newState="MAINTAIN_CURRENT_MODE"/>
+  </rule>
+</action:RuleSet>
