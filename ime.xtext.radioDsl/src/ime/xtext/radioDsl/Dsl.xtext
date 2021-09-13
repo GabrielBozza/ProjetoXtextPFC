@@ -4,156 +4,163 @@ grammar ime.xtext.radioDsl.Dsl with org.eclipse.xtext.common.Terminals
 import "http://action/1.0" 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 
+
 RuleSet returns RuleSet:
 	{RuleSet}
 	'RuleSet'
 	'{'
-		('rule' '{' rule+=Rule ( "," rule+=Rule)* '}' )?
+		(rule+=Rule ( "," rule+=Rule)* )?
 	'}';
 
 
 LeftSide returns LeftSide:
-	LeftSide_Impl | SimpleExp | CompoundExp | Expression_Impl;
+	SimpleExp | CompoundExp;
 
 RightSide returns RightSide:
-	RightSide_Impl | ActionRadio;
+	ActionRadio;
 
 Operator returns Operator:
-	Logic | Comparator | Maths;
+	Logic | Comparator | Math;
+	
+OperatorNum returns Operator:
+	Comparator | Math;
+	
+OperatorString returns Operator:
+	ComparatorString;
+	
+OperatorBool returns Operator:
+	LogicMiddle | ComparatorBool;
+	
+OperatorBoolBefore returns Operator:
+	LogicBefore;
 
 Operand returns Operand:
-	Num | Strings | BoolAttributes | StringAttributes | NumAttributes | Bool;
+	Num | Strings| Bool | BoolAttributes | StringAttributes | NumAttributes ;
+	
+OperandNum returns Operand:
+	Num | NumAttributes ;
+	
+OperandBool returns Operand:
+	Bool | BoolAttributes;
+	
+OperandString returns Operand:
+	Strings | StringAttributes;
 
 Expression returns Expression:
-	Expression_Impl | SimpleExp | CompoundExp;
+	SimpleExp | CompoundExp;
 
 Rule returns Rule:
 	'Rule'
-	priority=EInt
+	name=EString
 	'{'
-		'name' name=EString
-		'leftside' leftside=LeftSide
-		'rightside' rightside=RightSide
+		'priority' + '=' + priority=EInt
+		'rule'+'='+ leftside=LeftSide 
+		'-->' rightside=RightSide
 	'}';
 
-LeftSide_Impl returns LeftSide:
-	{LeftSide}
-	'LeftSide'
-	;
+SimpleExp returns SimpleExp:
+	PrecedingLogicOp=LogicOp
+	'(' 
+		(operand+=OperandNum operator=OperatorNum operand+=OperandNum) ')' |
+	PrecedingLogicOp=LogicOp
+	'('  
+		(operand+=OperandString operator=OperatorString operand+=OperandString) ')' |
+	PrecedingLogicOp=LogicOp
+	'('  
+		(operand+=OperandBool operator=OperatorString operand+=OperandBool) ')' |
+	PrecedingLogicOp=LogicOp
+	'(' 
+		(operator=OperatorBoolBefore operand+=OperandBool) ')';
 
-RightSide_Impl returns RightSide:
-	{RightSide}
-	'RightSide'
-	;
+CompoundExp returns CompoundExp:
+	PrecedingLogicOp=LogicOp
+	'['
+		expression+=Expression ( expression+=Expression)* 
+	']';
 
+enum LogicOp returns LogicOp:
+	None = '_' | and = 'and' | or = 'or' | not = 'not';
+	
+enum LogicOpMiddle returns LogicOp:
+	and = 'and' | or = 'or';
+	
+enum LogicOpBefore returns LogicOp:
+	None = '_' | not = 'not';
+
+Logic returns Logic:
+	Operation=LogicOp;
+	
+LogicMiddle returns Logic:
+	Operation=LogicOpMiddle;
+	
+LogicBefore returns Logic:
+	Operation=LogicOpBefore;
+
+Comparator returns Comparator:
+	Operation=CompOp;
+	
+ComparatorString returns Comparator:
+	Operation=CompOpString;
+	
+ComparatorBool returns Comparator:
+	Operation=CompOpBool;
+
+Math returns Math:
+	Operation=MathOp;
+
+enum CompOp returns CompOp:
+	greater = '>' | greater_equal = '>=' | less = '<' | less_equal = '<=' | equal = '=' | not_equal = '!=';
+	
+enum CompOpString returns CompOp:
+	equal = '=' | not_equal = '!=';
+	
+enum CompOpBool returns CompOp:
+	equal = '=' | not_equal = '!=';
+
+enum MathOp returns MathOp:
+	plus = '+' | minus = '-' | divided = '/' | multiplication = '*';
+	
 EString returns ecore::EString:
 	STRING | ID;
 
 EInt returns ecore::EInt:
-	'-'? INT;
-
-SimpleExp returns SimpleExp:
-	'SimpleExp'
-	'{'
-		'PrecedingLogicOp' PrecedingLogicOp=LogicOp
-		'operator' operator=Operator
-		'operand' '{' operand+=Operand ( "," operand+=Operand)* '}' 
-	'}';
-
-CompoundExp returns CompoundExp:
-	'CompoundExp'
-	'{'
-		'PrecedingLogicOp' PrecedingLogicOp=LogicOp
-		'expression' '{' expression+=Expression ( "," expression+=Expression)* '}' 
-	'}';
-
-Expression_Impl returns Expression:
-	{Expression}
-	'Expression'
-	;
-
-enum LogicOp returns LogicOp:
-				None = 'None' | and = 'and' | or = 'or' | not = 'not';
-
-Logic returns Logic:
-	'Logic'
-	'{'
-		'Operation' Operation=LogicOp
-	'}';
-
-Comparator returns Comparator:
-	'Comparator'
-	'{'
-		'Operation' Operation=CompOp
-	'}';
-
-Maths returns Math:
-	'Maths'
-	'{'
-		'Operation' Operation=MathOp
-	'}';
-
-enum CompOp returns CompOp:
-				greater = 'greater' | greater_equal = 'greater_equal' | less = 'less' | less_equal = 'less_equal' | equal = 'equal' | not_equal = 'not_equal';
-
-enum MathOp returns MathOp:
-				plus = 'plus' | minus = 'minus' | divided = 'divided' | multiplication = 'multiplication';
+	INT;
 
 Num returns Num:
-	'Num'
-	'{'
-		'value' value=EDouble
-	'}';
+	value=EDouble;
 
 Strings returns Strings:
-	'Strings'
-	'{'
-		'value' value=EString
-	'}';
-
-BoolAttributes returns BoolAttributes:
-	'BoolAttributes'
-	'{'
-		'boolAttr' boolAttr=BoolAttr
-	'}';
-
-StringAttributes returns StringAttributes:
-	'StringAttributes'
-	'{'
-		'stringAttr' stringAttr=StringAttr
-	'}';
-
-NumAttributes returns NumAttributes:
-	'NumAttributes'
-	'{'
-		'numAttr' numAttr=NumAttr
-	'}';
+	value=EString;
 
 Bool returns Bool:
-	value?='value'
-	'Bool'
-	;
+	value=EBoolean;
+	
+BoolAttributes returns BoolAttributes:
+	boolAttr=BoolAttr;
+
+StringAttributes returns StringAttributes:
+	stringAttr=StringAttr;
+
+NumAttributes returns NumAttributes:
+	numAttr=NumAttr;
 
 EDouble returns ecore::EDouble:
 	'-'? INT? '.' INT (('E'|'e') '-'? INT)?;
-
-enum BoolAttr returns BoolAttr:
-				SNRValues_ASC = 'SNRValues_ASC' | SNRValues_DESC = 'SNRValues_DESC';
-
-enum StringAttr returns StringAttr:
-				OpRole = 'OpRole';
-
-enum NumAttr returns NumAttr:
-				SecLevel = 'SecLevel' | CarrierFreq = 'CarrierFreq';
-
+	
 EBoolean returns ecore::EBoolean:
 	'true' | 'false';
 
+enum BoolAttr returns BoolAttr:
+	SNRValues_ASC = 'SNRValues_ASC' | SNRValues_DESC = 'SNRValues_DESC';
+
+enum StringAttr returns StringAttr:
+	OpRole = 'OperationalRole';
+
+enum NumAttr returns NumAttr:
+	SecLevel = 'SecurityLevel' | CarrierFreq = 'CarrierFrequency';
+
 ActionRadio returns ActionRadio:
-	'ActionRadio'
-	'{'
-		'newState' newState=RadioModes
-	'}';
+	newState=RadioModes;
 
 enum RadioModes returns RadioModes:
-				SILENT_MODE = 'SILENT_MODE' | ALERT_MODE = 'ALERT_MODE' | FULLDUPLEX_MODE = 'FULLDUPLEX_MODE' | NORMAL_MODE = 'NORMAL_MODE' | MAINTAIN_CURRENT_MODE = 'MAINTAIN_CURRENT_MODE';
+	SILENT_MODE = 'SILENT_MODE' | ALERT_MODE = 'ALERT_MODE' | FULLDUPLEX_MODE = 'FULLDUPLEX_MODE' | NORMAL_MODE = 'NORMAL_MODE' | MAINTAIN_CURRENT_MODE = 'MAINTAIN_CURRENT_MODE';

@@ -9,13 +9,10 @@ import Action.Bool;
 import Action.BoolAttributes;
 import Action.Comparator;
 import Action.CompoundExp;
-import Action.Expression;
-import Action.LeftSide;
 import Action.Logic;
-import Action.Math;
 import Action.Num;
+import Action.Math;
 import Action.NumAttributes;
-import Action.RightSide;
 import Action.Rule;
 import Action.RuleSet;
 import Action.SimpleExp;
@@ -58,20 +55,43 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				sequence_BoolAttributes(context, (BoolAttributes) semanticObject); 
 				return; 
 			case ActionPackage.COMPARATOR:
-				sequence_Comparator(context, (Comparator) semanticObject); 
-				return; 
+				if (rule == grammarAccess.getOperatorBoolRule()
+						|| rule == grammarAccess.getComparatorBoolRule()) {
+					sequence_ComparatorBool(context, (Comparator) semanticObject); 
+					return; 
+				}
+				else if (rule == grammarAccess.getOperatorStringRule()
+						|| rule == grammarAccess.getComparatorStringRule()) {
+					sequence_ComparatorString(context, (Comparator) semanticObject); 
+					return; 
+				}
+				else if (rule == grammarAccess.getOperatorRule()
+						|| rule == grammarAccess.getOperatorNumRule()
+						|| rule == grammarAccess.getComparatorRule()) {
+					sequence_Comparator(context, (Comparator) semanticObject); 
+					return; 
+				}
+				else break;
 			case ActionPackage.COMPOUND_EXP:
 				sequence_CompoundExp(context, (CompoundExp) semanticObject); 
 				return; 
-			case ActionPackage.EXPRESSION:
-				sequence_Expression_Impl(context, (Expression) semanticObject); 
-				return; 
-			case ActionPackage.LEFT_SIDE:
-				sequence_LeftSide_Impl(context, (LeftSide) semanticObject); 
-				return; 
 			case ActionPackage.LOGIC:
-				sequence_Logic(context, (Logic) semanticObject); 
-				return; 
+				if (rule == grammarAccess.getOperatorBoolBeforeRule()
+						|| rule == grammarAccess.getLogicBeforeRule()) {
+					sequence_LogicBefore(context, (Logic) semanticObject); 
+					return; 
+				}
+				else if (rule == grammarAccess.getOperatorBoolRule()
+						|| rule == grammarAccess.getLogicMiddleRule()) {
+					sequence_LogicMiddle(context, (Logic) semanticObject); 
+					return; 
+				}
+				else if (rule == grammarAccess.getOperatorRule()
+						|| rule == grammarAccess.getLogicRule()) {
+					sequence_Logic(context, (Logic) semanticObject); 
+					return; 
+				}
+				else break;
 			case ActionPackage.MATH:
 				sequence_Math(context, (Math) semanticObject); 
 				return; 
@@ -80,9 +100,6 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				return; 
 			case ActionPackage.NUM_ATTRIBUTES:
 				sequence_NumAttributes(context, (NumAttributes) semanticObject); 
-				return; 
-			case ActionPackage.RIGHT_SIDE:
-				sequence_RightSide_Impl(context, (RightSide) semanticObject); 
 				return; 
 			case ActionPackage.RULE:
 				sequence_Rule(context, (Rule) semanticObject); 
@@ -118,7 +135,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.ACTION_RADIO__NEW_STATE));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getActionRadioAccess().getNewStateRadioModesEnumRuleCall_3_0(), semanticObject.getNewState());
+		feeder.accept(grammarAccess.getActionRadioAccess().getNewStateRadioModesEnumRuleCall_0(), semanticObject.getNewState());
 		feeder.finish();
 	}
 	
@@ -126,6 +143,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	/**
 	 * Contexts:
 	 *     Operand returns BoolAttributes
+	 *     OperandBool returns BoolAttributes
 	 *     BoolAttributes returns BoolAttributes
 	 *
 	 * Constraint:
@@ -137,7 +155,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.BOOL_ATTRIBUTES__BOOL_ATTR));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getBoolAttributesAccess().getBoolAttrBoolAttrEnumRuleCall_3_0(), semanticObject.getBoolAttr());
+		feeder.accept(grammarAccess.getBoolAttributesAccess().getBoolAttrBoolAttrEnumRuleCall_0(), semanticObject.getBoolAttr());
 		feeder.finish();
 	}
 	
@@ -145,10 +163,11 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	/**
 	 * Contexts:
 	 *     Operand returns Bool
+	 *     OperandBool returns Bool
 	 *     Bool returns Bool
 	 *
 	 * Constraint:
-	 *     value?='value'
+	 *     value=EBoolean
 	 */
 	protected void sequence_Bool(ISerializationContext context, Bool semanticObject) {
 		if (errorAcceptor != null) {
@@ -156,7 +175,45 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.BOOL__VALUE));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getBoolAccess().getValueValueKeyword_0_0(), semanticObject.isValue());
+		feeder.accept(grammarAccess.getBoolAccess().getValueEBooleanParserRuleCall_0(), semanticObject.isValue());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     OperatorBool returns Comparator
+	 *     ComparatorBool returns Comparator
+	 *
+	 * Constraint:
+	 *     Operation=CompOpBool
+	 */
+	protected void sequence_ComparatorBool(ISerializationContext context, Comparator semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, ActionPackage.Literals.COMPARATOR__OPERATION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.COMPARATOR__OPERATION));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getComparatorBoolAccess().getOperationCompOpBoolEnumRuleCall_0(), semanticObject.getOperation());
+		feeder.finish();
+	}
+	
+	
+	/**
+	 * Contexts:
+	 *     OperatorString returns Comparator
+	 *     ComparatorString returns Comparator
+	 *
+	 * Constraint:
+	 *     Operation=CompOpString
+	 */
+	protected void sequence_ComparatorString(ISerializationContext context, Comparator semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, ActionPackage.Literals.COMPARATOR__OPERATION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.COMPARATOR__OPERATION));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getComparatorStringAccess().getOperationCompOpStringEnumRuleCall_0(), semanticObject.getOperation());
 		feeder.finish();
 	}
 	
@@ -164,6 +221,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	/**
 	 * Contexts:
 	 *     Operator returns Comparator
+	 *     OperatorNum returns Comparator
 	 *     Comparator returns Comparator
 	 *
 	 * Constraint:
@@ -175,7 +233,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.COMPARATOR__OPERATION));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getComparatorAccess().getOperationCompOpEnumRuleCall_3_0(), semanticObject.getOperation());
+		feeder.accept(grammarAccess.getComparatorAccess().getOperationCompOpEnumRuleCall_0(), semanticObject.getOperation());
 		feeder.finish();
 	}
 	
@@ -196,28 +254,39 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	
 	/**
 	 * Contexts:
-	 *     LeftSide returns Expression
-	 *     Expression returns Expression
-	 *     Expression_Impl returns Expression
+	 *     OperatorBoolBefore returns Logic
+	 *     LogicBefore returns Logic
 	 *
 	 * Constraint:
-	 *     {Expression}
+	 *     Operation=LogicOpBefore
 	 */
-	protected void sequence_Expression_Impl(ISerializationContext context, Expression semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
+	protected void sequence_LogicBefore(ISerializationContext context, Logic semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, ActionPackage.Literals.LOGIC__OPERATION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.LOGIC__OPERATION));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getLogicBeforeAccess().getOperationLogicOpBeforeEnumRuleCall_0(), semanticObject.getOperation());
+		feeder.finish();
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     LeftSide returns LeftSide
-	 *     LeftSide_Impl returns LeftSide
+	 *     OperatorBool returns Logic
+	 *     LogicMiddle returns Logic
 	 *
 	 * Constraint:
-	 *     {LeftSide}
+	 *     Operation=LogicOpMiddle
 	 */
-	protected void sequence_LeftSide_Impl(ISerializationContext context, LeftSide semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
+	protected void sequence_LogicMiddle(ISerializationContext context, Logic semanticObject) {
+		if (errorAcceptor != null) {
+			if (transientValues.isValueTransient(semanticObject, ActionPackage.Literals.LOGIC__OPERATION) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.LOGIC__OPERATION));
+		}
+		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
+		feeder.accept(grammarAccess.getLogicMiddleAccess().getOperationLogicOpMiddleEnumRuleCall_0(), semanticObject.getOperation());
+		feeder.finish();
 	}
 	
 	
@@ -235,15 +304,16 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.LOGIC__OPERATION));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getLogicAccess().getOperationLogicOpEnumRuleCall_3_0(), semanticObject.getOperation());
+		feeder.accept(grammarAccess.getLogicAccess().getOperationLogicOpEnumRuleCall_0(), semanticObject.getOperation());
 		feeder.finish();
 	}
 	
 	
 	/**
 	 * Contexts:
-	 *     Operator returns Maths
-	 *     Maths returns Maths
+	 *     Operator returns Math
+	 *     OperatorNum returns Math
+	 *     Math returns Math
 	 *
 	 * Constraint:
 	 *     Operation=MathOp
@@ -254,7 +324,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.MATH__OPERATION));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getMathsAccess().getOperationMathOpEnumRuleCall_3_0(), semanticObject.getOperation());
+		feeder.accept(grammarAccess.getMathAccess().getOperationMathOpEnumRuleCall_0(), semanticObject.getOperation());
 		feeder.finish();
 	}
 	
@@ -262,6 +332,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	/**
 	 * Contexts:
 	 *     Operand returns NumAttributes
+	 *     OperandNum returns NumAttributes
 	 *     NumAttributes returns NumAttributes
 	 *
 	 * Constraint:
@@ -273,7 +344,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.NUM_ATTRIBUTES__NUM_ATTR));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getNumAttributesAccess().getNumAttrNumAttrEnumRuleCall_3_0(), semanticObject.getNumAttr());
+		feeder.accept(grammarAccess.getNumAttributesAccess().getNumAttrNumAttrEnumRuleCall_0(), semanticObject.getNumAttr());
 		feeder.finish();
 	}
 	
@@ -281,6 +352,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	/**
 	 * Contexts:
 	 *     Operand returns Num
+	 *     OperandNum returns Num
 	 *     Num returns Num
 	 *
 	 * Constraint:
@@ -292,21 +364,8 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.NUM__VALUE));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getNumAccess().getValueEDoubleParserRuleCall_3_0(), semanticObject.getValue());
+		feeder.accept(grammarAccess.getNumAccess().getValueEDoubleParserRuleCall_0(), semanticObject.getValue());
 		feeder.finish();
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     RightSide returns RightSide
-	 *     RightSide_Impl returns RightSide
-	 *
-	 * Constraint:
-	 *     {RightSide}
-	 */
-	protected void sequence_RightSide_Impl(ISerializationContext context, RightSide semanticObject) {
-		genericSequencer.createSequence(context, semanticObject);
 	}
 	
 	
@@ -327,24 +386,24 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	 *     Rule returns Rule
 	 *
 	 * Constraint:
-	 *     (priority=EInt name=EString leftside=LeftSide rightside=RightSide)
+	 *     (name=EString priority=EInt leftside=LeftSide rightside=RightSide)
 	 */
 	protected void sequence_Rule(ISerializationContext context, Rule semanticObject) {
 		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, ActionPackage.Literals.RULE__PRIORITY) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.RULE__PRIORITY));
 			if (transientValues.isValueTransient(semanticObject, ActionPackage.Literals.RULE__NAME) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.RULE__NAME));
+			if (transientValues.isValueTransient(semanticObject, ActionPackage.Literals.RULE__PRIORITY) == ValueTransient.YES)
+				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.RULE__PRIORITY));
 			if (transientValues.isValueTransient(semanticObject, ActionPackage.Literals.RULE__LEFTSIDE) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.RULE__LEFTSIDE));
 			if (transientValues.isValueTransient(semanticObject, ActionPackage.Literals.RULE__RIGHTSIDE) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.RULE__RIGHTSIDE));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getRuleAccess().getPriorityEIntParserRuleCall_1_0(), semanticObject.getPriority());
-		feeder.accept(grammarAccess.getRuleAccess().getNameEStringParserRuleCall_4_0(), semanticObject.getName());
-		feeder.accept(grammarAccess.getRuleAccess().getLeftsideLeftSideParserRuleCall_6_0(), semanticObject.getLeftside());
-		feeder.accept(grammarAccess.getRuleAccess().getRightsideRightSideParserRuleCall_8_0(), semanticObject.getRightside());
+		feeder.accept(grammarAccess.getRuleAccess().getNameEStringParserRuleCall_1_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getRuleAccess().getPriorityEIntParserRuleCall_5_0(), semanticObject.getPriority());
+		feeder.accept(grammarAccess.getRuleAccess().getLeftsideLeftSideParserRuleCall_8_0(), semanticObject.getLeftside());
+		feeder.accept(grammarAccess.getRuleAccess().getRightsideRightSideParserRuleCall_10_0(), semanticObject.getRightside());
 		feeder.finish();
 	}
 	
@@ -356,7 +415,12 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	 *     SimpleExp returns SimpleExp
 	 *
 	 * Constraint:
-	 *     (PrecedingLogicOp=LogicOp operator=Operator operand+=Operand operand+=Operand*)
+	 *     (
+	 *         (PrecedingLogicOp=LogicOp operand+=OperandNum operator=OperatorNum operand+=OperandNum) | 
+	 *         (PrecedingLogicOp=LogicOp operand+=OperandString operator=OperatorString operand+=OperandString) | 
+	 *         (PrecedingLogicOp=LogicOp operand+=OperandBool operator=OperatorString operand+=OperandBool) | 
+	 *         (PrecedingLogicOp=LogicOp operator=OperatorBoolBefore operand+=OperandBool)
+	 *     )
 	 */
 	protected void sequence_SimpleExp(ISerializationContext context, SimpleExp semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -366,6 +430,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	/**
 	 * Contexts:
 	 *     Operand returns StringAttributes
+	 *     OperandString returns StringAttributes
 	 *     StringAttributes returns StringAttributes
 	 *
 	 * Constraint:
@@ -377,7 +442,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.STRING_ATTRIBUTES__STRING_ATTR));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getStringAttributesAccess().getStringAttrStringAttrEnumRuleCall_3_0(), semanticObject.getStringAttr());
+		feeder.accept(grammarAccess.getStringAttributesAccess().getStringAttrStringAttrEnumRuleCall_0(), semanticObject.getStringAttr());
 		feeder.finish();
 	}
 	
@@ -385,6 +450,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 	/**
 	 * Contexts:
 	 *     Operand returns Strings
+	 *     OperandString returns Strings
 	 *     Strings returns Strings
 	 *
 	 * Constraint:
@@ -396,7 +462,7 @@ public class DslSemanticSequencer extends AbstractDelegatingSemanticSequencer {
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, ActionPackage.Literals.STRINGS__VALUE));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getStringsAccess().getValueEStringParserRuleCall_3_0(), semanticObject.getValue());
+		feeder.accept(grammarAccess.getStringsAccess().getValueEStringParserRuleCall_0(), semanticObject.getValue());
 		feeder.finish();
 	}
 	
